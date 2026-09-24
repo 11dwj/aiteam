@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "project_stage": "NEW",
+  "change_risk": "T1",
+  "exposure": "INTERNAL",
+  "data_sensitivity": "LOW",
+  "auth_model": "UNKNOWN",
+  "status": "NEEDS_REVIEW",
+  "reason": "Assess security requirements against the actual project and change scope.",
+  "controls": {
+    "threat_model": {"status": "UNKNOWN", "evidence": ""},
+    "security_requirements": {"status": "UNKNOWN", "evidence": ""},
+    "authentication": {"status": "UNKNOWN", "evidence": ""},
+    "authorization": {"status": "UNKNOWN", "evidence": ""},
+    "token_validation": {"status": "NOT_APPLICABLE", "evidence": "Auth model not selected."},
+    "session_management": {"status": "NOT_APPLICABLE", "evidence": "Auth model not selected."},
+    "input_validation": {"status": "UNKNOWN", "evidence": ""},
+    "secrets_management": {"status": "UNKNOWN", "evidence": ""},
+    "security_logging": {"status": "UNKNOWN", "evidence": ""},
+    "dependency_management": {"status": "UNKNOWN", "evidence": ""},
+    "data_protection": {"status": "UNKNOWN", "evidence": ""}
+  },
+  "known_vulnerabilities": []
+}

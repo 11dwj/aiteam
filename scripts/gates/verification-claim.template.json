@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "ticket_id": "TICKET-ID",
+  "task_class": "S",
+  "classification_reason": "Single-scope, low-risk change with no shared behavior or data side effect.",
+  "security_impact": {
+    "level": "NONE",
+    "reason": "No authentication, authorization, sensitive-data, network-exposure, upload/download, dependency, or security-logging behavior changes.",
+    "triggers": [],
+    "evidence_ref": ""
+  },
+  "verification_claim": {
+    "execution_subject": "AGENT_LOCAL",
+    "verification_kind": "STATIC_REVIEW",
+    "result": "PASS",
+    "claimed_business_status": "NOT_RUN",
+    "target_entry_executed": false,
+    "business_assertions_executed": false,
+    "target_entry": "",
+    "command_or_entry": "",
+    "assertions": [],
+    "evidence_refs": [
+      "harness/evidence/TICKET-ID/static-review.txt"
+    ],
+    "not_verified": [
+      "Runtime and business behavior are not claimed by this static review."
+    ]
+  },
+  "ticket_feedback": {
+    "source_ticket_id": "TICKET-ID",
+    "handoff_status": "READY_FOR_REVIEW",
+    "feedback_status": "READY",
+    "summary": "Sanitized ticket outcome, verification boundary, and remaining risk for later feedback aggregation.",
+    "unresolved_items": []
+  }
+}

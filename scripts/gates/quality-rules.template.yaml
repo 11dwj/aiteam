@@ -1,0 +1,29 @@
+version: "0.1"
+purpose: evidence-guidance-only
+note: "这是统一证据清单，不是跨项目静态分析器；项目 Profile 和真实验证结果优先。"
+rules:
+  - id: PUBLIC_RULE_REUSE
+    applies_to: [java, groovy, typescript]
+    check: "修改公共方法、Service、Controller、查询或跨模块逻辑前搜索已有实现、调用点和 Profile。"
+    evidence: [search_command, search_result, reused_path_or_nonreuse_reason]
+  - id: N_PLUS_ONE
+    check: "集合循环内不得无证据执行查询；若无法避免，记录查询次数和原因。"
+    evidence: [query_count_before, query_count_after, sql_log_or_profiler]
+  - id: PAGINATION_COUNT_EXPORT
+    check: "分页 total、列表数据和导出范围使用同一筛选口径。"
+    evidence: [filter_scope, count_result, page_result, export_result]
+  - id: TRANSACTION_ROLLBACK
+    check: "跨表写入或外部副作用必须说明事务边界和失败回滚。"
+    evidence: [transaction_boundary, failure_case, rollback_result]
+  - id: STATE_IDEMPOTENCY
+    check: "重复提交、撤回、驳回、重试和非法状态迁移必须有结果说明。"
+    evidence: [state_before, action, state_after, repeat_result]
+  - id: PERMISSION_SCOPE
+    check: "验证最小角色、组织范围和越权拒绝，不用管理员结果替代业务角色。"
+    evidence: [role, scope, allowed_result, denied_result]
+  - id: SQL_NULL_TYPE
+    check: "参数、空值、类型转换和动态 SQL 条件与项目数据库约束一致。"
+    evidence: [schema_or_mapping, null_case, type_case, sql_review]
+  - id: OBSERVABILITY_CLEANUP
+    check: "失败路径有可定位日志，测试夹具和临时数据可清理并有结果。"
+    evidence: [log_entry, correlation_id, cleanup_command, cleanup_result]
