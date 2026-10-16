@@ -5,6 +5,7 @@
 | 项目 | 业务 | 技术栈 |
 |---|---|---|
 | [haishi](haishi.md) | 海事封航解封报告智能体（16 格矩阵 + 多专家 Agent + 风险推演 + 阶梯解封） | 双版本：Python(LangGraph+Chroma+FastAPI) + Java(JDK8 零依赖单 JAR 交付主力, deepseek) |
+| [haishi-agents](haishi-agents.md) | 海事 AI 智能体集群（图片分析/检查项一致性/风险条目解析五种模式/扫描件OCR/模型链降级/加密上送） | JDK8 零依赖 + Maven 双载体，qwen3.7-plus/qwen-plus |
 | [haishihoutai](haishihoutai.md) | 海事业务后台 + 指挥大屏 + 数据同步中枢（信创国产化） | RuoYi 单体 JDK17 + Thymeleaf + 金仓 KingbaseES + JDK8 单 JAR 智能体 |
 | [kecu](kecu.md) | 常州经开区招商项目管理 + 绩效考核 | RuoYi-Vue-Plus 5.5.1 + Vue3 + 双数据源 |
 | [czdaping](czdaping.md) | 电镀产业园数智园区（投标三端：后台/大屏/小程序） | Flask + Vue3 后台 + Vue2 ECharts 大屏 + uni-app |

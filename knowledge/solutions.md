@@ -84,3 +84,24 @@
 
 ### SVN 半成品重构弄丢调用
 **方案**：现象是某功能"永远不出现"但代码看起来都在 → `svn diff -r r前:r后` 考古定位肇事提交，对照原版补齐；build/ 产物加 svn:ignore 不入库。
+
+## AI/LLM（2026-10 海事智能体集群补充）
+
+### 模型批量下架应急（qwen-vl-plus/max 2026-10-10 全灭）
+- **模型链降级**：config 放多条（`xxx.models=a,b,c`），代码端仅对模型类错误（404/400/model not exist）切下一个，其余走重试；响应 model 字段报实际使用的模型
+- 排查两步：`grep '"ok":false' logs/llm_audit.jsonl` 看失败模型名 → `curl /v1/models` 看在架清单
+- 预警期充足（主线提前半年公告），真正要做的是**订阅公告 + 链式兜底**，不必全自动换新
+
+### 扫描件 PDF OCR（纯 Java）
+- 隐藏 OCR 文本层无 ToUnicode → 提取 2 万+乱码骗过字数检查 → **可读率检测**（中文/ASCII 占比 <50% 判坏）
+- 渲染链：内嵌 JPEG 抽图（零依赖）→ mutool.exe（单文件 45MB）→ PDFBox（maven，含 JBIG2）
+- python 环境在服务器上不可控（PATH 里多个 python、无 fitz）→ **去 python 化**
+
+### LLM 输出被截断（JSON 不完整）
+- 症状：`输出中未找到 JSON 对象`/分块只出一个领域——实际是 finish_reason=length 输出超 8192 token 被截断、括号不配对
+- 修法：① 截断检测（内容非空但 finish=length 也判失败）② 缩分块（6000→4000 字）③ 失败块补跑 ④ 仍失败**整体报错不返回残缺**（确认入库场景宁可报错不缺数据）
+
+### 提示词写 Java 源码的坑
+- Python 补丁脚本内联字符串里 `
+` 极易变真换行 → Java 编译报"未结束的字符串"
+- 对策：补丁脚本用 Write 工具写独立 .py 文件执行，不用 bash heredoc；转义一律 `chr(92)+'n'`
