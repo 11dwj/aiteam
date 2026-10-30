@@ -9,7 +9,7 @@
 | `team/roles/` | 6 个角色定义（PM、策划、设计、前端、后端、测试） |
 | `team/workflows/` | 全流程工作流（接需求后必读）+ 门禁与诚实声明规范（gates.md） |
 | `team/templates/` | 方案书 / 测试报告 / 项目总结 / 日终反馈模板 |
-| `standards/` | 代码规范（Java-RuoYi、Vue、uni-app、SQL、UI、LLM 集成、提示词优化） |
+| `standards/` | 代码规范（Java-RuoYi、Vue、**React(HeroUI红线)**、uni-app、SQL、UI、**UI反AI味**、移动端UI、LLM 集成、提示词优化） |
 | `projects/` | 各项目档案（技术栈、启动方式、部署地址、坑） |
 | `knowledge/` | 历史问题解决方案库 + 老新技术对比应答手册 |
 | `scripts/` | 常用启动/构建/检查脚本 + gates/ 验证声明门禁脚本 |
@@ -30,6 +30,6 @@ skill 源文件在 `skills/`，生效副本在 `~/.claude/skills/`。用户说 *
 ## 接到需求时的第一步
 
 1. 判断需求属于哪个项目 → 读 `projects/<项目名>.md`
-2. 涉及写代码 → 读对应 `standards/` 规范；写提示词/角色文档 → 读 `standards/prompt-optimization.md`（五段结构：角色前缀/输入占位/职责/约束清单/输出契约）
+2. 涉及写代码 → 读对应 `standards/` 规范（UI 一律用组件库严禁手搓：React 用 HeroUI，Vue 用 Element Plus/ElementUI 或 shadcn-vue，见 `standards/frontend-react.md`、`standards/frontend-vue.md`）；写提示词/角色文档 → 读 `standards/prompt-optimization.md`（五段结构：角色前缀/输入占位/职责/约束清单/输出契约）
 3. 走 `team/workflows/full-delivery.md` 流程
 4. 遇到类似问题 → 先查 `knowledge/solutions.md`；被问技术选型/新旧对比 → 查 `knowledge/legacy-vs-modern.md`（JDK8 vs 17/21、Vue2 vs 3、SB2 vs 3、OFBiz vs 现代框架的应答手册）

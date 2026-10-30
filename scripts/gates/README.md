@@ -1,6 +1,6 @@
 # 门禁脚本（Gates）
 
-来自 harness 工程的**零依赖** Python 校验脚本（纯 stdlib，Python 3.8+），把"诚实声明"变成机器可判定：编译通过≠业务通过、一次经验≠规则、总结≠使用证据。配合 codeteam 的 S/M/C 工单分级与五态验证体系使用。
+来自 harness 工程的**零依赖** Python 校验脚本（纯 stdlib，Python 3.9+（用了 Path.is_relative_to）），把"诚实声明"变成机器可判定：编译通过≠业务通过、一次经验≠规则、总结≠使用证据。配合 codeteam 的 S/M/C 工单分级与五态验证体系使用。
 
 ## 脚本清单
 
@@ -24,7 +24,9 @@
 
 ```bash
 # 让 AI 按模板填好声明 JSON 后，直接调用校验
-python -c "import json,verification_claim_gate as g; print(json.dumps(g.validate_verification_claim(json.load(open('claim.json',encoding='utf-8'))),ensure_ascii=False,indent=2))"
+python -c "import json,verification_claim_gate as g; print(json.dumps(g.evaluate_verification_claim(json.load(open('claim.json',encoding='utf-8'))),ensure_ascii=False,indent=2))"
+
+> ⚠️ 注意：除 quality_gate.py 外，其余四个脚本是**校验函数库**（无 CLI、无退出码）——`python -c` 方式永远 exit 0，接 CI/钩子时必须解析输出的 `gate_status` 字段自行判定，不能依赖 `$?`。
 ```
 
 返回 `gate_status: BLOCKED` 时按 `follow_up_questions` 补证据，直到 PASS。**注意：门禁 PASS 仍 ≠ 业务 PASS**——门禁只保证"声明结构诚实"，业务结论永远来自真实运行验证。

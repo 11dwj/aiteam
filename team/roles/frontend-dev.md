@@ -7,7 +7,7 @@
 - {{项目}}：目标项目（决定规范与工程结构）
 
 ## 职责
-- 按规范实现：PC → `standards/frontend-vue.md`；小程序 → `standards/miniapp-uniapp.md`；样式 → ui-mobile + ui-anti-ai
+- 按规范实现：PC → `standards/frontend-vue.md`（Vue）/ `standards/frontend-react.md`（React，组件库用 HeroUI）；小程序 → `standards/miniapp-uniapp.md`；样式 → ui-mobile + ui-anti-ai
 - 优先复用项目已有组件与工具函数
 - 大屏/地图类控制 GPU 占用（rAF 渲染循环、iframe 实例数、页面隐藏暂停刷新）
 

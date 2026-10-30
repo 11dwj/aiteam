@@ -86,7 +86,7 @@ def git_changed_files(project: Path) -> List[Tuple[str, str]]:
 
     dedup: Dict[str, str] = {}
     for path, status in pairs:
-        normalized = Path(path.replace("\\", "/")).as_posix().lstrip("./")
+        normalized = Path(path.replace("\\", "/")).as_posix().removeprefix("./")
         if normalized:
             dedup[normalized] = status
     return sorted(dedup.items())
@@ -103,7 +103,7 @@ def scan_source_hygiene(project: Path, changed_files: Sequence[str] = (), clean:
     if changed_files:
         pairs = []
         for raw in changed_files:
-            normalized = Path(raw.replace("\\", "/")).as_posix().lstrip("./")
+            normalized = Path(raw.replace("\\", "/")).as_posix().removeprefix("./")
             pairs.append((normalized, discovered.get(normalized, "EXPLICIT")))
     else:
         pairs = list(discovered.items())
@@ -113,7 +113,7 @@ def scan_source_hygiene(project: Path, changed_files: Sequence[str] = (), clean:
     scanned: List[str] = []
     for raw, status in pairs:
         target = _inside(project, raw)
-        normalized = Path(raw.replace("\\", "/")).as_posix().lstrip("./")
+        normalized = Path(raw.replace("\\", "/")).as_posix().removeprefix("./")
         if target is None:
             findings.append({"path": normalized, "code": "PATH_OUTSIDE_PROJECT", "resolution": "BLOCK"})
             continue
@@ -124,7 +124,10 @@ def scan_source_hygiene(project: Path, changed_files: Sequence[str] = (), clean:
         newly_added = status == "??" or status.startswith("A")
         safe_file = newly_added and not formal and target.suffix.lower() in SAFE_TEMP_SUFFIXES
         text = ""
-        if target.suffix.lower() in TEXT_SUFFIXES and target.stat().st_size <= 1024 * 1024:
+        if target.suffix.lower() in TEXT_SUFFIXES and target.stat().st_size > 1024 * 1024:
+            # 大文件跳过内容扫描但不静默——显式记入 findings，防大文件藏调试残留
+            findings.append({"code": "FILE_TOO_LARGE_SKIPPED", "file": normalized, "size": target.stat().st_size})
+        elif target.suffix.lower() in TEXT_SUFFIXES:
             text = target.read_text(encoding="utf-8", errors="replace")
         marker_file = not formal and "HARNESS_TEMPORARY_FILE" in text
         if safe_file or marker_file:

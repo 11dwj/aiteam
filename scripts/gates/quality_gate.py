@@ -9,6 +9,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")  # Windows GBK控制台防中文崩溃
 import re
 from datetime import datetime, timezone
 from pathlib import Path, PureWindowsPath
@@ -119,14 +122,19 @@ def load_evidence(path: Path) -> Tuple[Optional[Dict[str, object]], List[str]]:
     return value, []
 
 
-def inspect_changed_files(project: Path, values: list[str]) -> tuple[list[dict], list[str]]:
+def inspect_changed_files(project: Path, values: list[str]) -> tuple[list[dict], list[str], list[str]]:
     findings: list[dict] = []
     errors: list[str] = []
+    skipped: list[str] = []
     for raw in values:
         try:
             path = rel_path(project, raw)
         except ValueError:
             errors.append(f"CHANGED_FILE_OUTSIDE_PROJECT={raw}")
+            continue
+        if not path.exists():
+            # 变更列表含已删除文件属正常（本diff删除旧文件）——记 skipped 不算违规
+            skipped.append(f"CHANGED_FILE_DELETED={raw}")
             continue
         if not path.is_file():
             errors.append(f"CHANGED_FILE_MISSING={raw}")
@@ -164,7 +172,7 @@ def main() -> int:
             target.write_text(json.dumps(template(args.ticket, args.changed_file), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         evidence_path = target
     evidence, errors = load_evidence(evidence_path) if evidence_path else (None, ["EVIDENCE_FILE_REQUIRED"])
-    findings, file_errors = inspect_changed_files(project, args.changed_file)
+    findings, file_errors, file_skipped = inspect_changed_files(project, args.changed_file)
     errors.extend(file_errors)
     dimension_errors: list[str] = []
     dimensions = evidence.get("dimensions", {}) if evidence else {}
@@ -198,6 +206,7 @@ def main() -> int:
         "changed_files": args.changed_file,
         "findings": findings,
         "blockers": errors,
+        "skipped": file_skipped,
         "dimensions": required_dimensions,
     }
     print(json.dumps(result, ensure_ascii=False, indent=2))

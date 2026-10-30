@@ -48,7 +48,7 @@
 ### 工作汇报规范
 **方案**：按工单汇总修改文件（前端/后端/SQL/配置分组）、验证命令、结果状态（PASS/FAIL/TEST_BLOCKED/NOT_RUN/NEEDS_REVIEW），脱敏后转发负责人，禁止"完成"笼统带过。模板：[daily-feedback](../team/templates/daily-feedback.md)。
 
-## LLM/AI（2026-09-22 二次挖掘补充）
+## AI/LLM（2026-09-22 二次挖掘补充）
 
 ### 开源模型 JSON 输出成功率低（deepseek 0/9 → 9/9）
 **方案**：不改提示词，代码侧三层容错——①智能 JSON 提取（扫描全部配平对象、找含目标字段的可解析块、剥离 ```json 围栏）②业务违规自动修复（混类型留其一、空值按序补全）③失败重试一次；max_tokens 调大（6000→10000）；超时链全链路放大（服务端 180s，前端/网关同步）。
@@ -65,7 +65,7 @@
 ### 改了代码误判依旧
 **方案**：seal-ai 反复踩——只编译到 build/out 运行的是旧 jar，**改完必须重新打包**再验证。
 
-## 前端/部署（二次挖掘补充）
+## 前端/大屏（2026-09-22 二次挖掘补充：部署）
 
 ### 页面 404"权限不足"假象
 **方案**：PC 访问的入口前端构建较旧、缺新路由，被 path:'*' 兜底进 404 页误显示权限不足 → 重新 build:prod 部署或统一入口（warmflow 与 haishihoutai 都遇到过）。
@@ -106,7 +106,7 @@
 ` 极易变真换行 → Java 编译报"未结束的字符串"
 - 对策：补丁脚本用 Write 工具写独立 .py 文件执行，不用 bash heredoc；转义一律 `chr(92)+'n'`
 
-## 后端/构建/前端（2026-10 kecu版本库开发补充）
+## 后端/构建 + 前端（2026-10 kecu版本库补充）
 
 - **改了后端代码"不生效"（报接口不存在/不支持XX）**：`mvn spring-boot:run -pl ruoyi-admin` 不带 `-am` 时，依赖模块从 ~/.m2 解析旧 jar。先 `mvn -pl <模块> -am install -DskipTests` 再启动；仍不生效则 Maven 增量编译静默失效（class 时间戳新内容旧），`mvn clean package` 全量重建并用 `grep -c 新符号 X.class` 验证二进制。
 - **Vue3 全站切页白屏（URL 已变、无报错、刷新恢复）**：`<router-view>` 外层 `<transition mode="out-in">` 离场动画结束事件不触发 → 进场组件永不插入（内容区只剩 `<!---->` 占位）。去掉 transition 层（keep-alive 保留）根治；createCustomNameComponent 加载失败渲染 h(null) 也是同样白屏表现。
