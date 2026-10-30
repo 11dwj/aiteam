@@ -105,3 +105,14 @@
 - Python 补丁脚本内联字符串里 `
 ` 极易变真换行 → Java 编译报"未结束的字符串"
 - 对策：补丁脚本用 Write 工具写独立 .py 文件执行，不用 bash heredoc；转义一律 `chr(92)+'n'`
+
+## 后端/构建/前端（2026-10 kecu版本库开发补充）
+
+- **改了后端代码"不生效"（报接口不存在/不支持XX）**：`mvn spring-boot:run -pl ruoyi-admin` 不带 `-am` 时，依赖模块从 ~/.m2 解析旧 jar。先 `mvn -pl <模块> -am install -DskipTests` 再启动；仍不生效则 Maven 增量编译静默失效（class 时间戳新内容旧），`mvn clean package` 全量重建并用 `grep -c 新符号 X.class` 验证二进制。
+- **Vue3 全站切页白屏（URL 已变、无报错、刷新恢复）**：`<router-view>` 外层 `<transition mode="out-in">` 离场动画结束事件不触发 → 进场组件永不插入（内容区只剩 `<!---->` 占位）。去掉 transition 层（keep-alive 保留）根治；createCustomNameComponent 加载失败渲染 h(null) 也是同样白屏表现。
+- **keep-alive 缓存页面的数据刷新钩子**：只挂 onActivated 在刷新/首次进入（缓存视图未恢复）时不触发，只挂 onMounted 在从详情页返回时不触发——必须双挂。
+- **MySQL 唯一索引对 NULL 列不生效**：复合唯一键含可空列时，NULL 行不参与去重（并发防重号失效）。解决：写入时显式填非 NULL 哨兵值（如 project 级版本 record_id=0）+ 存量回填 UPDATE。
+- **冗余处室名的 LIKE 匹配陷阱**：前端筛选值/代码常量写"科技处"但业务表冗余存的是"科技人才处"，`LIKE '%科技处%'` 永不匹配且无报错——处室改名/对齐时全链路 grep 名称常量；判断尽量用稳定的 department_id。
+- **快照/版本恢复类功能的铁律**（版本库方案核心）：① 恢复时审核轨迹字段（state/checkPerson/checkDate*/reject* 等）一律跳过，由提交动作按处室现算审批链——防快照里的旧值/null 复活；② 附件类字段（url/dataname/rel）空串永不覆盖已有值——版本恢复绝不丢信息；③ 敏感归属字段（userId/departmentId/round）以主表权威值为准，前端注入无效。
+- **python 正则批量改代码的 \1 陷阱**：非 raw 字符串里 `\1` 是真实控制字符 \x01（分组引用应为 `\1` 或 r'\1'），曾吞掉 6 个文件的 onMounted 块 + 写入控制字符导致 vite 构建失败——批量替换后必须过构建。
+- **表单"工作副本覆盖后控件回显错乱"**：用快照 Object.assign 覆盖表单数据后，凡是显示值存在独立 ref 的控件（级联/多选，需显式初始化回显的）必须重跑初始化函数；computed getter/setter 型级联自动回显无需处理——按控件类型区分处理。
