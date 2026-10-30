@@ -19,6 +19,10 @@
 - 前端：plus-ui（Vue 3 + TS + Vite + Element Plus + Pinia + UnoCSS + ECharts）
 - **双数据源**（最大架构特点）：master（ruoyi_ipas 系统库）+ ipas_jk（业务库），Service 层 `@DS("ipas_jk")` 切换——漏注解会查错库
 
+## 处室改名对照（lifan d19e9a4，2026-08-10，ID 不变）
+
+外资处→产业一处(21)、高端装备处→产业二处(24)、材料电子处→产业三处(23)、生命健康处→产业四处(22)、驻沪临港处→中法合作处(25)、科技人才处→**科技处**(27)；综合处(28)/服务业处(26)不变。雪花新ID：21→1999140998937309185、22→1999139727215947777、23→1999139756282474498、24→1999139785999118338、25→1999139818257510402、27→1999139971207000065。⚠️ ID与序号错位（21=一处、24=二处、23=三处、22=四处）；代码改名已提交，存量数据 UPDATE 在服务器执行未进 git，本地备份全为旧名——处室名以服务器为准。
+
 ## 三、核心数据表
 
 project/project_detail、info（新增有效信息）、land（落地质量）、middle_park、personal/team/department_assessment、assessment_result、account（到账外资）、account_cooperation、research、reception、travel + 若依系统表。
