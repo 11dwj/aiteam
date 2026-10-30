@@ -10,6 +10,8 @@
 ### 双服务器代码同步
 **方案**：核对一致性时注意 `config.properties` 等是各服务器专属配置，**不需要同步**，其余代码目录逐项比对。
 
+
+- **Navicat SSH 隧道连 MySQL 报 2013 (reading initial communication packet)**：隧道通了但 MySQL 握手被掐。排查顺序：服务器 `systemctl status mysqld` → `mysql -h127.0.0.1 直连` → `ss -tlnp | grep 3306`（三步都正常则必是客户端配置）。最常见错配：「常规」页端口填成了 SSH 端口/隧道动态端口——SSH 隧道方案下常规页**永远是 127.0.0.1 + MySQL真实端口(3306)**，SSH 信息只在「SSH」页填。
 ## 前端/大屏
 
 ### 大屏 GPU 占用过高（cztoubiao）
